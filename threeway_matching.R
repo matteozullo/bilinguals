@@ -284,7 +284,7 @@ after_late <- c(sum(std_late_dif_aft[1:2])/2,sum(std_late_dif_aft[3:8])/6,sum(st
 late_bias_df <- data.frame('Covariates' = covariates,
                          'Before' = before_late,
                          'After' = after_late)
-# plot bias reduction
+# plot bias reduction 
 gg_late <- ggplot(late_bias_df, aes(x=After, xend=Before, y=Covariates, group=Covariates)) +
   geom_vline(xintercept = 0) +
   scale_color_uchicago() +
