@@ -5,7 +5,7 @@
 ###################################################################################################
 
 # install packages
-packages <- c("tidyverse","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq")
+packages <- c("tidyverse","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq","ggsci","ggplot2")
 
 installed_packages <- packages %in% rownames(installed.packages())
 if (any(installed_packages == FALSE)) {
@@ -363,3 +363,167 @@ stargazer(model4.spanish$fit, model4.asian$fit, model4.chinese$fit, model4.hindi
           # fixed effects
           omit = c("year","state","ind","sex","age", "race", "marstatus", "educ","cohort"), omit.labels = c("year","State","Industry","Sex","Age","Race","Marital","Education","Cohort")
 )
+
+
+
+###################################################################################################
+# Figures
+###################################################################################################
+
+## Unconditional Quantile Regression coefficients ##
+
+# initialize vectors
+BI = NULL
+L2 <- NULL
+
+# for each percentile, run RIF regression and save betas
+for (PCT in seq(0.01, 1, by=0.01)){
+
+  # create RIF
+  bilinguals$lnincwage2005adj.pct <- rif(x=bilinguals$lnincwage2005adj, weights = NULL, method="quantile", quantile=PCT)
+
+  # run RIF regression
+  model4.pct <- lm.wage2005(bilinguals, "lnincwage2005adj.pct", x4, weights = NULL)
+
+  # append to matrices
+  BI <- rbind(BI, c(model4.pct$clustered["langstatusbilingual",],PCT))
+  L2 <- rbind(L2, c(model4.pct$clustered["langstatusl2learner",],PCT))
+}
+
+# combine into single dataframe
+df.plot.betas <- rbind(cbind(BI,'Bilingual'),cbind(L2,'L2'))
+colnames(df.plot.betas) <- c('Estimate','SE','t','pval','CI95_lwr','CI95_upr','Percentile',"Language")
+
+df.plot.betas <- as_tibble(df.plot.betas) %>% mutate(
+  Language = as.factor(Language),
+  Percentile = as.numeric(Percentile)*100,
+  Estimate = as.numeric(Estimate),
+  CI95_lwr = as.numeric(CI95_lwr),
+  CI95_upr = as.numeric(CI95_upr)
+  ) %>% filter(Percentile > 9 & Percentile < 91)
+
+# plot betas
+plot.betas <- ggplot(df.plot.betas, aes(x = Percentile, y = Estimate, color = Language)) +
+  geom_line(aes(size = Language), alpha = 1, lwd=1) +
+  scale_color_manual(labels = c("Bilingual", "Late learner"), values = c("#800000","#155F83")) +
+  geom_ribbon(aes(ymin = CI95_lwr, ymax = CI95_upr, , fill = Language), alpha = 0.1, color = NA, show.legend = FALSE) +
+  scale_fill_manual(labels = c("Bilingual", "Late "), values = c("#800000","#155F83")) +
+  theme_classic() +
+  theme(
+    text=element_text(size=14),
+    legend.title = element_blank(), legend.position = "bottom", legend.justification=c(0.5,1), 
+    panel.grid.major = element_line(size = 0.5, linetype = 4),
+    panel.grid.minor = element_blank()) +
+  scale_y_continuous(limits = c(min(df.plot.betas$CI95_lwr),max(df.plot.betas$CI95_upr))) +
+  scale_x_continuous(breaks = seq(10, 90, by=20), labels = seq(10, 90, by=20)) +
+    ylab(expression("Coefficient estimate")) +
+    xlab("Percentile")
+
+# save plots
+ggsave(plot.betas, filename = "betas.png", type = "cairo", dpi = 300)
+ggsave("betas.eps", device=cairo_ps)
+ggsave(plot.betas, filename = "betas.tiff", device = "tiff", dpi = 300)
+
+
+## Unconditional Quantile Regression decompositions ##
+
+# initialize vectors
+diff.BI <- NULL
+diff.L2 <- NULL
+cog.BI.endow <- NULL
+cog.L2.endow <- NULL
+man.BI.endow <- NULL
+man.L2.endow <- NULL 
+int.BI.endow <- NULL
+int.L2.endow <- NULL
+cog.BI.coef <- NULL
+cog.L2.coef <- NULL
+man.BI.coef <- NULL
+man.L2.coef <- NULL
+int.BI.coef <- NULL
+int.L2.coef <- NULL
+
+# initialize parameters
+bimono <- c('bilingual','monolingual')
+latemono <- c('l2learner','monolingual')
+
+# for each percentile, run RIF regression and decompose
+for (PCT in seq(0.01, 1, by=0.01)){
+
+  # create RIF variable
+  bilinguals$lnincwage2005adj.pct <- rif(x=bilinguals$lnincwage2005adj, weights = NULL, method="quantile", quantile=PCT)
+
+  # run RIF regressions
+  oaxaca.bimono <- oaxaca_twofold(bilinguals, "lnincwage2005adj.pct", x.oaxaca, "langstatus", bimono)
+  oaxaca.latemono <- oaxaca_twofold(bilinguals, "lnincwage2005adj.pct", x.oaxaca, "langstatus", latemono)
+
+  # append differences
+  diff.BI <- rbind(diff.BI, c(oaxaca.bimono$ydiff, PCT))
+  diff.L2 <- rbind(diff.L2, c(oaxaca.latemono$ydiff, PCT))
+
+  # append endowments
+  cog.BI.endow <- rbind(cog.BI.endow, c(oaxaca.bimono$twofold['cognitive','endowments_abs'],PCT))
+  cog.L2.endow <- rbind(cog.L2.endow, c(oaxaca.latemono$twofold['cognitive','endowments_abs'],PCT))
+  man.BI.endow <- rbind(man.BI.endow, c(oaxaca.bimono$twofold['manual','endowments_abs'],PCT))
+  man.L2.endow <- rbind(man.L2.endow, c(oaxaca.latemono$twofold['manual','endowments_abs'],PCT))  
+  int.BI.endow <- rbind(int.BI.endow, c(oaxaca.bimono$twofold['interpersonal','endowments_abs'],PCT))
+  int.L2.endow <- rbind(int.L2.endow, c(oaxaca.latemono$twofold['interpersonal','endowments_abs'],PCT))
+
+  # append coefficients
+  cog.BI.coef <- rbind(cog.BI.coef, c(oaxaca.bimono$twofold['cognitive','coefficients_abs'],PCT))
+  cog.L2.coef <- rbind(cog.L2.coef, c(oaxaca.latemono$twofold['cognitive','coefficients_abs'],PCT))
+  man.BI.coef <- rbind(man.BI.coef, c(oaxaca.bimono$twofold['manual','coefficients_abs'],PCT))
+  man.L2.coef <- rbind(man.L2.coef, c(oaxaca.latemono$twofold['manual','coefficients_abs'],PCT))  
+  int.BI.coef <- rbind(int.BI.coef, c(oaxaca.bimono$twofold['interpersonal','coefficients_abs'],PCT))
+  int.L2.coef <- rbind(int.L2.coef, c(oaxaca.latemono$twofold['interpersonal','coefficients_abs'],PCT))
+
+}
+
+# combine skill-group dataframes
+cog.BI <- cbind(rbind(cbind(cog.BI.endow,'Endowments'),cbind(diff.BI,'Difference'),cbind(cog.BI.coef,'Coefficients')),'Cognitive','Bilingual')
+man.BI <- cbind(rbind(cbind(man.BI.endow,'Endowments'),cbind(diff.BI,'Difference'),cbind(man.BI.coef,'Coefficients')),'Manual','Bilingual')
+int.BI <- cbind(rbind(cbind(int.BI.endow,'Endowments'),cbind(diff.BI,'Difference'),cbind(int.BI.coef,'Coefficients')),'Interpersonal','Bilingual')
+cog.L2 <- cbind(rbind(cbind(cog.L2.endow,'Endowments'),cbind(diff.L2,'Difference'),cbind(cog.L2.coef,'Coefficients')),'Cognitive','L2')
+man.L2 <- cbind(rbind(cbind(man.L2.endow,'Endowments'),cbind(diff.L2,'Difference'),cbind(man.L2.coef,'Coefficients')),'Manual','L2')
+int.L2 <- cbind(rbind(cbind(int.L2.endow,'Endowments'),cbind(diff.L2,'Difference'),cbind(int.L2.coef,'Coefficients')),'Interpersonal','L2')
+
+# combine into single dataframe
+df.plot.oaxaca <- rbind(cog.BI,man.BI,int.BI,cog.L2,man.L2,int.L2)
+# rename columns
+colnames(df.plot.oaxaca) <- c('Estimate','Percentile','Effect','Skill','Language')
+
+df.plot.oaxaca <- as_tibble(df.plot.oaxaca) %>% mutate(
+  Language = as.factor(Language),
+  Skill = as.factor(Skill),
+  Effect = as.factor(Effect),
+  Percentile = as.numeric(Percentile)*100,
+  Estimate = as.numeric(Estimate)
+  ) %>% filter(Percentile > 9 & Percentile < 91)
+  
+plot.oaxaca <- ggplot(df.plot.oaxaca, aes(x = Percentile, y = Estimate, color = Effect, linetype = Effect)) + 
+  geom_line(aes(size = Effect), alpha = 1) +
+  geom_point(data = subset(df.plot.oaxaca[seq(1, nrow(df.plot.oaxaca), 2), ], Effect == "Difference"),size=3, shape=25, alpha =0.3) +
+  scale_linetype_manual(values = c("solid", "longdash","solid")) +
+  scale_size_manual(values = c(1,0.0,1)) +
+  scale_colour_manual(values = c("#155F83","#000000","#800000")) +
+  theme_classic() +
+    theme(
+    text=element_text(size=14),
+    legend.title = element_blank(), legend.position = "bottom", 
+    panel.grid.major.y = element_line(size = 0.5, linetype = "solid"),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(colour = "black", fill=NA, size=1)
+    ) +
+  #scale_y_continuous(limits = c(min(df.plot.oaxaca$Estimate),max(df.plot.oaxaca$Estimate))) +
+  scale_y_continuous(breaks = c(0,-1000,-2000,-3000), labels = c(0,-1000,-2000,-3000)) +
+  scale_x_continuous(breaks = seq(10, 90, by=20), labels = seq(10, 90, by=20)) +
+  facet_grid(Skill ~ Language, labeller = labeller(Language = c(Bilingual = "Bilingual", L2 = "Late learner"))) +
+  # override legend
+  guides(size = guide_legend(override.aes = list(shape = c(NA,24,NA), color = c("#155F83","#000000","#800000")))) +
+    ylab("Total difference (USD)") +
+    xlab("Percentile")
+
+# save plots
+ggsave(plot.oaxaca, filename = "oaxacas.png", type = "cairo", dpi = 300)
+ggsave("oaxacas.eps", device=cairo_ps)
+ggsave(plot.oaxaca, filename = "oaxacas.tiff", device = "tiff", dpi = 300)
