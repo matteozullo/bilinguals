@@ -1,4 +1,4 @@
-# Replication code for ""Complementaries of Language and Non-Language Skills: Accumulation and Returns Effects"
+# Replication code for "Complementaries of Language and Non-Language Skills: Accumulation and Returns Effects"
 
 This is the code repository for the Bilinguals Project over the span of 15 years: from 2005 to 2019. The R-code consists of 4 parts. The first file is a data processing script. The second and third files consist of three-way matching algorithm and sparce PCA analysis. The fourth file includes regression adjustments and Oaxaca-Blinder wage gap decomposition. The data is retrived from IPUMS USA.
 
