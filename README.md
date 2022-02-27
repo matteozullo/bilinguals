@@ -44,7 +44,6 @@ $ install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotat
 - 'stargazer' (convert output to LaTeX code, HTML code and ASCII text)
 - 'dineq' (decomposition of income inequality, including 'rif' function)
 
-
 ## Implementation
 
 - The original file downloaded from the IPUMS website is vary large (~16 GB) and the preprocessing takes an excess of 20 minutes to run. The output file *bilinguals_processed.csv* (~6.2 GB) includes the processed data which performs the following transformation of the dependent variable: monetary values are discounted to 2005 dollars and logged (*lnwage2005*). 
