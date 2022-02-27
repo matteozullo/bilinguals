@@ -9,7 +9,15 @@ Data is obtained from two data sources:
 
 ## Installation
 
-The R scripts are written in R 4.0.2 and use the packages listed below. To install the packages via Terminal/Command Line, navigate to the folder with all Rscripts and data files and open R, then specify the CRAN mirror using 'chooseCRANmirror(graphics=FALSE, ind=76)'. To install packages, run the following line 'install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotation","rospca","dplyr","plot3D", "writexl","psy","fastDummies","ggalt","ggsci","scales","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq"))
+The R scripts are written in R 4.0.2 and use the packages listed below. To install the packages via Terminal/Command Line, navigate to the folder with all Rscripts and data files and open R, then specify the CRAN mirror using command line
+
+$chooseCRANmirror(graphics=FALSE, ind=76)
+
+To install packages, run the following line 
+
+$install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotation","rospca",
+"dplyr","plot3D", "writexl","psy","fastDummies","ggalt","ggsci","scales",
+"multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq"))
 
 ### Data handling and visualisation
 - 'tidyverse', including 'readr' and 'readxl' (read data), 'tibble' (update dataframes), 'dplyr' (manipulate data), 'ggplot2' (create graphics)
