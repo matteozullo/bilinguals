@@ -9,10 +9,10 @@ Data is obtained from two data sources:
 
 ## Installation
 
-The R scripts are written in R 4.0.2 and use the packages listed below. Launch a command line session and ``cd`` into the folder containing the input files. Then, specify the CRAN mirror like ``chooseCRANmirror(graphics=FALSE, ind=76)``. To install packages, run the following line:
+The R scripts are written in R 4.0.2 and use the packages listed below. Launch a command line session and ``cd`` into the folder containing the input files. Then, specify the CRAN mirror and install packages like:
 
 ```
-$ install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotation","rospca","dplyr","plot3D", "writexl","psy","fastDummies","ggalt","ggsci","scales","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq"))
+$ R - e 'chooseCRANmirror(graphics=FALSE, ind=76);install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotation","rospca","dplyr","plot3D", "writexl","psy","fastDummies","ggalt","ggsci","scales","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq"))'
 ```
 
 ### Data handling and visualisation
