@@ -12,7 +12,7 @@ Data is obtained from two data sources:
 The R scripts are written in R 4.0.2 and use the packages listed below. Launch a command line session and ``cd`` into the folder containing the input files. Then, specify the CRAN mirror and install packages like:
 
 ```
-$ R - e 'chooseCRANmirror(graphics=FALSE, ind=76);install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotation","rospca","dplyr","plot3D", "writexl","psy","fastDummies","ggalt","ggsci","scales","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq"))'
+$ R -e 'chooseCRANmirror(graphics=FALSE, ind=76);install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotation","rospca","dplyr","plot3D", "writexl","psy","fastDummies","ggalt","ggsci","scales","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq"))'
 ```
 
 ### Data handling and visualisation
