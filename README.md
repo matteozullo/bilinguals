@@ -41,9 +41,11 @@ $ R - e 'chooseCRANmirror(graphics=FALSE, ind=76);install.packages(c("readr","ti
 ## Implementation
 
 - The original file downloaded from the IPUMS website is very large (~16 GB) and the preprocessing takes an excess of 20 minutes to run. The output file *bilinguals_processed.csv* (~6.2 GB) includes the processed data which performs the following transformation of the dependent variable: monetary values are discounted to 2005 dollars and calculated as yearly wages for 52weeks/year.
-- The SPCA might be performed by supplying the input file *Skills_2010.xlsx* to the *bilinguals_SPCA.R* script. The script implements the SPCA algorithm that reduces down the 35 skills obtained from O\*NET into three main components that were interpreted as representative of the cognitive, manual, and interpersonal dimensions of jobs. The finding was validated through exploratory factor analysis (EFA). Launch a command line session and ``cd`` into the folder containing the input files. Then, run the script like: ``$ Rscript Skills_2010.xlsx`` and obtain *skills_factors.xlsx*.
+- The SPCA might be performed by supplying the input file *Skills_2010.xlsx* to the *bilinguals_SPCA.R* script. The script implements the SPCA algorithm that reduces down the 35 skills obtained from O\*NET into three main components that were interpreted as representative of the cognitive, manual, and interpersonal dimensions of jobs. The finding was validated through exploratory factor analysis (EFA). Launch a command line session and ``cd`` into the folder containing the input files. Then, run the script and obtain *skills_factors.xlsx* like: 
+```
+$ Rscript Skills_2010.xlsx
+```
 - The *bilinguals_threeway_matching.R* merges the *bilinguals_processed.csv* and *skills_factors.xlsx* files and performs the three-way matching of bilinguals, late learners, and monolinguals. The script outputs the *bilinguals_matched.csv* file.
-
 
 Second, the R code `bilinguals_data_processing.R` cleans and modifies the data from IPUMS USA by assigning labels, trimming variables, and merging the dataset from IPUMS with the output from SPCA.
 
