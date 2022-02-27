@@ -1,12 +1,15 @@
 # Replication code for "Complementaries of Language and Non-Language Skills: Accumulation and Returns Effects"
 
-This is the code repository for the Bilinguals Project over the span of 15 years: from 2005 to 2019. The R-code consists of 4 parts. The first file is a sparce principal component analysis (SPCA). The second and third files consist of data processing script and three-way matching algorithm. The fourth file includes regression adjustments and Oaxaca-Blinder wage gap decomposition. The data is retrived from 
-Integrated Public Use Microdata Series (IPUMS) [doi:10.18128/D010.V8.0]([doi:10.18128/D010.V8.0) and Occupation Information Network (ONET) [doi:10.26209/MJ1461305](doi:10.26209/MJ1461305).
+This is the code repository for the Bilinguals Project. The R-code consists of four files: i) the Sparse Principal Component Analysis (SPCA); ii) preprocessing file for the Census data; iii) the three-way matching implementation; and iv) regression analysis and decomposition.
 
+## Data sources
+Data is obtained from two data sources:
+- Census data: from Integrated Public Use Microdata Series (IPUMS) [doi:10.18128/D010.V8.0]([doi:10.18128/D010.V8.0). The following variables have been obtained for years 2005-2019: YEAR, SAMPLE, SERIAL, CBSERIAL, HHWT, CLUSTER, REGION, STATEFIP, METRO, STRATA, GQ, PERNUM, PERWT, SEX, AGE, MARST, BIRTHYR, RACE, RACED, HISPAN, HISPAND, BPL, BPLD, CITIZEN, YRIMMIG, YRSUSA1, LANGUAGE, LANGUAGED, SPEAKENG, EDUC, EDUCD, EMPSTAT, EMPSTATD, LABFORCE, CLASSWKR, CLASSWKRD, OCC2010, IND1990, WKSWORK2,	UHRSWORK, INCTOT, INCWAGE, INCOTHER, POVERTY, PWSTATE2. A detailed description of the variables is provided in the Census codebook ([here](https://usa.ipums.org/usa-action/variables/group)).
+- Skill codes: from Occupation Information Network (O\*NET) [doi:10.26209/MJ1461305](doi:10.26209/MJ1461305).
 
 ## Installation
 
-The R scripts are written in R 4.0.2 with the following R packages used for the analysis:
+The R scripts are written in R 4.0.2 and use the following packages:
 
 ### Data handling and visualisation
 - 'tidyverse', including 'readr' and 'readxl' (read data), 'tibble' (update dataframes), 'dplyr' (manipulate data), 'ggplot2' (create graphics)
@@ -32,9 +35,25 @@ The R scripts are written in R 4.0.2 with the following R packages used for the 
 - 'dineq' (decomposition of income inequality, including 'rif' function)
 
 
-## Data Analysis
+## Implementation
 
-First, `bilinguals_SPCA.R` script implements sparce PCA to reduce down the 35 non-language skills acquired from ONET. The procedure identifies three main components (sparse loadings and scores) that were interpreted as representative of the cognitive, manual, and interpersonal dimensions of each job. The result was validated by exploratory factor analysis (EFA).
+- The original file downloaded from the IPUMS website is vary large (~16 GB) and the preprocessing takes an excess of 20 minutes to run. The output file *bilinguals_processed.csv* (~6.2 GB) includes the processed data which performs the following transformation of the dependent variable: monetary values are discounted to 2005 dollars and logged (*lnwage2005*). 
+- The SPCA might be performed by supplying the input file *Skills_2010.xlsx* to the *bilinguals_SPCA.R* script. The script implements the SPCA algorithm reduces down the 35 skills obtained from O\*NET into three main components (sparse loadings and scores)
+- 
+-  
+-    that were interpreted as representative of the cognitive, manual, and interpersonal dimensions of jobs. The finding was validated through exploratory factor analysis (EFA).
+- 
+- Launch a command line session and ``cd`` into the folder containing the input files. Then, run the script like:
+
+```
+$ Rscript Skills_2010.xlsx
+```
+- 
+- The *bilinguals_threeway_matching.R* merges the *bilinguals_processed.csv* and *Skills_2010.xlsx* files and performs the three-way matching of bilinguals, late learners, and monolinguals. The script outputs the *bilinguals_matched.csv* file.
+- 
+
+
+
 
 Second, the R code `bilinguals_data_processing.R` cleans and modifies the data from IPUMS USA by assigning labels, trimming variables, and merging the dataset from IPUMS with the output from SPCA.
 
