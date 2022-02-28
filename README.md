@@ -1,6 +1,6 @@
 # Replication code for "Complementaries of Language and Non-Language Skills: Accumulation and Returns Effects"
 
-This is the code repository for the Bilinguals Project. The R-code consists of four files: i) the Sparse Principal Component Analysis (SPCA); ii) preprocessing file for the Census data; iii) the three-way matching implementation; and iv) regression analysis and decomposition.
+This is the code repository for the Bilinguals Project. The R-code consists of four files: i) preprocessing file for the Census data; ii) the Sparse Principal Component Analysis (SPCA); iii) the three-way matching implementation; and iv) regression analysis and decomposition.
 
 ## Data sources
 Data is obtained from two data sources:
