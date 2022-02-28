@@ -5,22 +5,26 @@
 ###################################################################################################
 
 # install packages
-packages <- c("tidyverse","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq","ggsci","ggplot2")
+# packages <- c("tidyverse","multiwayvcov","lmtest","Hmisc","sandwich","oaxaca","stargazer","dineq","ggsci","ggplot2")
 
-installed_packages <- packages %in% rownames(installed.packages())
-if (any(installed_packages == FALSE)) {
-  install.packages(packages[!installed_packages])
-}
+# installed_packages <- packages %in% rownames(installed.packages())
+# if (any(installed_packages == FALSE)) {
+#   install.packages(packages[!installed_packages])
+# }
 
 # load packages
-invisible(lapply(packages, library, character.only = TRUE))
+# invisible(lapply(packages, library, character.only = TRUE))
 
-# e.g., bilingual-L2
-# endowments: 2.811176e-02
-# dollars: -499.38551
-# The cog endowments effect is (+), which means that the gap closes. Not only it closes, but l2learner would be actually making more. How much? Around 500 more
-# e.g. -7.563687e-03	570.30936
-# The man endowment effect is (-), which means that l2 learner would be making 570 less than bilingual, which is larger than initial gap.
+library(tidyverse)
+library(multiwayvcov)
+library(lmtest)
+library(Hmisc)
+library(sandwich)
+library(oaxaca)
+library(stargazer)
+library(dineq)
+library(ggsci)
+library(ggplot2)
 
 ###################################################################################################
 # Define functions
