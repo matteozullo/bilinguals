@@ -4,7 +4,6 @@
 # Error reports and other questions: mzullo@gatech.edu & ochurkina@gatech.edu
 ###################################################################################################
 
-install.packages(c("tidyverse","fastDummies","ggalt","ggsci","scales"))
 library(tidyverse)
 library(fastDummies)
 library(ggalt)
@@ -29,7 +28,19 @@ bilinguals <- read_csv("bilinguals_processed.csv",
                          "cognitive" = col_double(),
                          "manual" = col_double(),
                          "interpersonal" = col_double()
-                         )) #12,865,608
+                         )) #13,196,871
+
+# skills
+skills <- read_excel("skills_factors.xlsx")
+names(skills)
+names(skills)[1] <- "occ2010_code"
+skills$occ2010_code <- as.integer(skills$occ2010_code)
+bilinguals <- left_join(bilinguals,
+                        skills[c("occ2010_code","cognitive","manual","interpersonal","pcog","pman","pint","pstem","pnon_stem","psys","psoc","pmon")],
+                        by="occ2010_code")
+
+# drop NAs
+bilinguals <- bilinguals %>% filter(!is.na(cognitive)) #12,865,608
 
 # recode NAs to "other"
 bilinguals <- bilinguals %>% mutate(language_grp2 = if_else(language_grp2 == "NA","other",language_grp2))
