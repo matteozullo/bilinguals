@@ -25,13 +25,6 @@ bilinguals_full <- read_csv("data.csv",
                               "incwage" = col_integer()
                             ))
 
-# skills
-library(readxl)
-skills <- read_excel("skills_factors.xlsx")
-names(skills)
-names(skills)[1] <- "occ2010_code"
-skills$occ2010_code <- as.integer(skills$occ2010_code)
-
 # languages
 languages <- read_csv("languages.csv",
                       na = "",
@@ -349,10 +342,6 @@ group_by(year, statefip) %>%
 
 bilinguals <- left_join(bilinguals,languages, by = "language")
 bilinguals <- bilinguals %>% mutate(language_grp=ifelse(is.na(language_grp),"other",language_grp))
-bilinguals <- left_join(bilinguals,
-                        skills[c("occ2010_code","cognitive","manual","interpersonal","pcog","pman","pint","pstem","pnon_stem","psys","psoc","pmon")],
-                        by="occ2010_code")
-
 
 ###################################################################################################
 # Assign labels
