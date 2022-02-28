@@ -4,18 +4,11 @@
 # Error reports and other questions: ochurkina@gatech.edu
 ###################################################################################################
 
-install.packages(c("readr","tidyverse","readxl","psych","psychTools","GPArotation",
-                   "rospca","dplyr","plot3D", "writexl", "psy"))
-
-library(readr)
 library(tidyverse)
-library(readxl)
 library(psych)
 library(psychTools)
 library(GPArotation)
 library(rospca)
-library(dplyr)
-library(plot3D)
 library(writexl)
 library(psy)
 
