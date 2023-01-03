@@ -337,7 +337,7 @@ group_by(year, statefip) %>%
   filter(incwage.pct < 0.995) #13196871
 
 
-### language subgroups and skills
+### language subgroups
 
 bilinguals <- left_join(bilinguals,languages, by = "language")
 bilinguals <- bilinguals %>% mutate(language_grp=ifelse(is.na(language_grp),"other",language_grp))
@@ -391,11 +391,6 @@ for (j in 1:length(cohort.lab)){
 for (j in 1:length(race.lab)){
   bilinguals <- mutate(bilinguals, race6 = ifelse(race  %in%  race.lab[[j]] & hispan %in% hispan.lab[[j]], labels(race.lab[j]), race6)) 
 }
-
-### drop columns and NAs
-names(bilinguals) #13196871
-bilinguals <- subset(bilinguals, select = -c(1,12:14,19:26)) #42 columns left
-bilinguals <- bilinguals %>% filter(!is.na(cognitive)) #12,865,608
 
 ### save datafile
 write.csv(bilinguals, "bilinguals_processed.csv") 
