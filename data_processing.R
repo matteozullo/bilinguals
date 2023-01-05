@@ -25,8 +25,7 @@ bilinguals_full <- read_csv("data.csv",
                             ))
 
 # languages
-languages <- read_csv("languages.csv",
-                      na = "",
+languages <- read_csv("languages.csv", na = "",
                       col_types = cols(
                         .default = col_character()
                       ))
@@ -43,13 +42,26 @@ occupations <- read_csv("occ_labels.csv", col_types = cols(
   "occ2010" = col_character()
 ))
 
+# location quotient data
+lqs <- read_csv("lq_state.csv", na = "",
+                      col_types = cols(
+                        .default = col_integer(),
+                        "statefip" = col_character()
+                      ))
+
 # lowercase labels
 industries <- industries %>% mutate(ind1990 = tolower(ind1990))
 occupations <- occupations %>% mutate(occ2010 = tolower(occ2010))
 
-# left join to include numeric codes for industries and occupations in the main dataset
+# left join to include numeric codes for industries, occupations and location quotients in the main dataset
 bilinguals <- left_join(bilinguals_full, occupations, by = "occ2010")
 bilinguals <- left_join(bilinguals, industries, by = "ind1990")
+bilinguals <- left_join(bilinguals, industries, by = c("statefip","year"))
+
+### language subgroups
+
+bilinguals <- left_join(bilinguals,languages, by = "language")
+bilinguals <- bilinguals %>% mutate(language_grp=ifelse(is.na(language_grp),"other",language_grp))
 
 ###################################################################################################
 # Set global parameters
@@ -202,20 +214,10 @@ cohort.lab <- list(
   "2010" = c(2010:2019)
 )
 
-lang.lab <- list(
-  "european" = c("german","yiddish, jewish","dutch","swedish","danish","norwegian","icelandic","italian","french",
-                 "portuguese","rumanian","celtic","greek","albanian","russian","ukrainian, ruthenian, little russian","czech",
-                 "polish","slovak","serbo-croatian, yugoslavian, slavonian","slovene","lithuanian","other balto-slavic"),
-  "spanish" = c("spanish"),
-  "asian" = c("chinese","tibetan","burmese, lisu, lolo","kachin","thai, siamese, lao","japanese","korean","vietnamese",
-              " other east/southeast asian","indonesian"," other malayan","filipino, tagalog","micronesian, polynesian","hawaiian"),
-  "hindi" = c("hindi and related")
-)
-
 # race
 race.lab <- list(
   "White" = c("white"),
-  "Black"  = c("black/african american/negro"),
+  "Black"  = c("black/african american"),
   "Latino"  = c("white","black/african american/negro","american indian or alaska native", "chinese",
                 "japanese","other asian or pacific islander","other race, nec","two major races",
                 "three or more major races"),
@@ -253,8 +255,9 @@ bilinguals <- bilinguals %>%
     !ind1990_code %in% ind.rm,  # remove military
     !speakeng %in% speakeng.rm, # keep speakers of English only
     !wkswork2 %in% wkswork2.rm, # remone n/a
-    !bpl %in% bpl.rm # keep mainland Americans
-  )  %>% #18775237
+    !bpl %in% bpl.rm, # keep mainland Americans
+    age >= 16 # keep individuals of working age
+  )  %>%
   
   # add income variables (low income, deflator)
   group_by(year) %>% 
@@ -275,7 +278,7 @@ bilinguals <- bilinguals %>%
       wkswork2=="50-52 weeks" ~ 51),
     incwage2005adj = 52*incwage2005/weeks) %>%
   
-  select(-c(incwage_defl)) %>% # take out the deflator variable -> 15718852
+  select(-c(incwage_defl)) %>%
 
     # create variables
   mutate(
@@ -334,13 +337,7 @@ bilinguals <- bilinguals %>%
 group_by(year, statefip) %>% 
   mutate(incwage.pct = percent_rank(incwage2005)) %>% 
   ungroup() %>%
-  filter(incwage.pct < 0.995) #13196871
-
-
-### language subgroups
-
-bilinguals <- left_join(bilinguals,languages, by = "language")
-bilinguals <- bilinguals %>% mutate(language_grp=ifelse(is.na(language_grp),"other",language_grp))
+  filter(incwage.pct < 0.995) #13,196,871
 
 ###################################################################################################
 # Assign labels
