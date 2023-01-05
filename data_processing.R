@@ -43,9 +43,10 @@ occupations <- read_csv("occ_labels.csv", col_types = cols(
 ))
 
 # location quotient data
-lqs <- read_csv("lq_state.csv", na = "",
+lqs <- read_csv("lqs_state.csv", na = "",
                       col_types = cols(
                         .default = col_double(),
+                        "year" = col_factor(),
                         "statefip" = col_character()
                       ))
 
