@@ -1,7 +1,7 @@
 ###################################################################################################
 # Authors: Olga Churkina, Luisa Nazareno, Matteo Zullo
 # Title: Complementaries of Language and Non-Language Skills
-# Error reports and other questions: mzullo@gatech.edu
+# Error reports and other questions: mzullo@gatech.edu & ochurkina@gatech.edu
 ###################################################################################################
 
 # install packages
@@ -191,10 +191,10 @@ bilinguals$lnincwage2005adj.pct90 <- rif(x=bilinguals$lnincwage2005adj, weights 
 
 # regression parameters
 x1 <- c("langstatus","year","sex", "age5cat", "race6", "marstatus", "educlevel", "cohort")
-x2 <- c("langstatus","uhrswork","year","statefip","sex", "age5cat", "race6", "marstatus", "educlevel", "cohort")
-x3 <- c("langstatus","uhrswork","year","statefip","ind","sex", "age5cat", "race6", "marstatus", "educlevel", "cohort")
-x4 <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","statefip","ind","sex", "age5cat", "race6", "marstatus", "educlevel","cohort")
-x.oaxaca <- c("cognitive","manual","interpersonal","uhrswork","year","statefip","ind","sex", "age5cat", "race6", "marstatus", "educlevel", "cohort")
+x2 <- c("langstatus","uhrswork","year","lqnonenglish","sex", "age5cat", "race6", "marstatus", "educlevel", "cohort")
+x3 <- c("langstatus","uhrswork","year","ind","lqnonenglish","sex", "age5cat", "race6", "marstatus", "educlevel", "cohort")
+x4 <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","ind","lqnonenglish","sex", "age5cat", "race6", "marstatus", "educlevel","cohort")
+x.oaxaca <- c("cognitive","manual","interpersonal","uhrswork","year","ind","lqnonenglish","sex", "age5cat", "race6", "marstatus", "educlevel", "cohort")
 
 # regressions
 model1 <- lm.wage2005(bilinguals, "lnincwage2005adj", x1, weights = NULL)
@@ -338,15 +338,20 @@ bilinguals.hindi <- read_bilinguals("bilinguals_hindi1.csv")
 bilinguals.european <- read_bilinguals("bilinguals_european1.csv")
 
 # cohort
-x4.cohort <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","statefip","ind","sex", "age5cat", "race6", "marstatus", "educlevel","cohort_trend","langstatus:cohort_trend")
+x4.cohort <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","ind","lqnonenglish","sex", "age5cat", "race6", "marstatus", "educlevel","cohort_trend","langstatus:cohort_trend")
 model4.cohort <- lm.wage2005(bilinguals.cohort, "lnincwage2005adj", x4.cohort, weights = NULL)
 
 # language subgroups
-model4.spanish <- lm.wage2005(bilinguals.spanish, "lnincwage2005adj", x4, weights = NULL)
-model4.asian <- lm.wage2005(bilinguals.asian, "lnincwage2005adj", x4, weights = NULL)
-model4.chinese <- lm.wage2005(bilinguals.chinese, "lnincwage2005adj", x4, weights = NULL)
-model4.hindi <- lm.wage2005(bilinguals.hindi, "lnincwage2005adj", x4, weights = NULL)
-model4.european <- lm.wage2005(bilinguals.european, "lnincwage2005adj", x4, weights = NULL)
+x4.spanish <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","ind","lqspanish","sex", "age5cat", "race6", "marstatus", "educlevel","cohort")
+model4.spanish <- lm.wage2005(bilinguals.spanish, "lnincwage2005adj", x4.spanish, weights = NULL)
+x4.asian <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","ind","lqasian","sex", "age5cat", "race6", "marstatus", "educlevel","cohort")
+model4.asian <- lm.wage2005(bilinguals.asian, "lnincwage2005adj", x4.asian, weights = NULL)
+x4.chinese <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","ind","lqchinese","sex", "age5cat", "race6", "marstatus", "educlevel","cohort")
+model4.chinese <- lm.wage2005(bilinguals.chinese, "lnincwage2005adj", x4.chinese, weights = NULL)
+x4.hindi <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","ind","lqhindi","sex", "age5cat", "race6", "marstatus", "educlevel","cohort")
+model4.hindi <- lm.wage2005(bilinguals.hindi, "lnincwage2005adj", x4.hindi, weights = NULL)
+x4.european <- c("langstatus","cognitive","manual","interpersonal","uhrswork","year","ind","lqeuropean","sex", "age5cat", "race6", "marstatus", "educlevel","cohort")
+model4.european <- lm.wage2005(bilinguals.european, "lnincwage2005adj", x4.european, weights = NULL)
 
 stargazer(model4.spanish$fit, model4.asian$fit, model4.chinese$fit, model4.hindi$fit,model4.european$fit,model4.cohort$fit,
           # output
