@@ -1,7 +1,7 @@
 ###################################################################################################
 # Authors: Olga Churkina, Luisa Nazareno, Matteo Zullo
 # Title: Complementaries of Language and Non-Language Skills
-# Error reports and other questions: mzullo@gatech.edu & ochurkina@gatech.edu
+# Error reports and other questions: mzullo@gatech.edu
 ###################################################################################################
 
 library(tidyverse)
