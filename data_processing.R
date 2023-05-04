@@ -57,7 +57,7 @@ occupations <- occupations %>% mutate(occ2010 = tolower(occ2010))
 # left join to include numeric codes for industries, occupations and location quotients in the main dataset
 bilinguals <- left_join(bilinguals_full, occupations, by = "occ2010")
 bilinguals <- left_join(bilinguals, industries, by = "ind1990")
-bilinguals <- left_join(bilinguals, industries, by = c("statefip","year"))
+bilinguals <- left_join(bilinguals, lqs, by = c("statefip","year"))
 
 ### language subgroups
 
