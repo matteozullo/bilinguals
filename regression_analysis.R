@@ -127,9 +127,9 @@ oaxaca_twofold <- function(data, y, X, groupvar, groups, logged = TRUE){
   
   if (logged == TRUE) {
     # exponentiate terms
-    y.diff.exp <- exp(y.max)-exp(y.min)
-    endow.exp <- (y.diff-coef)*exp(y.max)
-    coef.exp <- (y.diff-endow)*exp(y.max)
+    y.diff.exp <- (exp(y.max)/exp(y.min)-1)*exp(y.max)
+    endow.exp <- (y.diff.exp-exp(endow))*exp(y.max)
+    coef.exp <- (y.diff.exp-exp(coef))*exp(y.max)
     # save results
     df <- cbind(endow,-endow.exp,endow.perctot,coef,-coef.exp,coef.perctot)
     colnames(df) <- c("endowments_log","endowments_abs","endowments_perctot","coefficients_log", "coefficients_abs", "coefficients_perctot")    
