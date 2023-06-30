@@ -1,6 +1,6 @@
 ###################################################################################################
 # Authors: Olga Churkina, Luisa Nazareno, Matteo Zullo
-# Title: Complementaries of Language and Non-Language Skills
+# Title: The Labor Market Outcomes of Bilinguals in the United States
 # Error reports and other questions: mzullo@gatech.edu
 ###################################################################################################
 
