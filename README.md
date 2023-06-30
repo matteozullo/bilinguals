@@ -1,4 +1,4 @@
-# Replication code for "Complementaries of Language and Non-Language Skills: Accumulation and Returns Effects"
+# Replication code for "The Labor Market Outcomes of Bilinguals in the United States: Accumulation and Return Effects"
 
 This is the code repository for the Bilinguals Project. The R-code consists of four files: i) preprocessing file for the Census data; ii) the Sparse Principal Component Analysis (SPCA); iii) the three-way matching implementation; and iv) regression analysis and decomposition.
 
